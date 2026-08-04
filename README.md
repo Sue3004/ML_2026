@@ -11,7 +11,7 @@ Mã học phần: `CSE703020-2-3-25` | Nhóm: `9`
 | :--- | :--- |
 | Phạm Thị Lương | `23017258` |
 | Phạm Trọng Hoàng | `22010221` |
-| Tô Thị Thùy Dương | `23010242` |
+| Tô Thị Thùy Dương | `23010876` |
 
 -----
 
@@ -27,7 +27,7 @@ Bài toán được đặt ra như sau:
 
 ## III. Dữ liệu
 
-- Nguồn dữ liệu: [https://www.kaggle.com/competitions/store-sales-time-series-forecasting]()
+- Nguồn dữ liệu: [https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data]()
 - File sử dụng: `train.csv`, `test.csv`
 
 **Các trường dữ liệu chính:**
@@ -81,12 +81,12 @@ Kết quả cuối cùng được trực quan hóa qua:
 ## VII. Cấu trúc dự án
 
 ```
-
 Group9_MachineLearning_Project/
 ├── .git/
 ├── README.md
 ├── notebooks/
 │   └── salesPrediction.ipynb
+├── data/                      # chỉ cần khi chạy local (train.csv, test.csv)
 └── requirements/
     └── requirements.txt
 ```
@@ -99,22 +99,28 @@ Group9_MachineLearning_Project/
 pip install pandas numpy matplotlib scikit-learn torch xgboost statsmodels
 ```
 
-Khuyến nghị chạy trên môi trường có GPU (notebook sử dụng `torch.cuda`) — ví dụ Google Colab với GPU T4.
+**Bắt buộc chạy trên môi trường có GPU (CUDA)** — notebook gọi trực tiếp `.cuda()` ở nhiều bước (chuyển tensor, khởi tạo mô hình TCN/LSTM), không có cơ chế tự chuyển sang CPU. Khuyến nghị dùng **Google Colab** với GPU T4 (miễn phí). Nếu chạy local, máy cần có GPU NVIDIA hỗ trợ CUDA và đã cài PyTorch bản GPU tương ứng; nếu không, cần tự sửa các dòng `.cuda()` trong code sang `.to(device)` với `device = "cuda" if torch.cuda.is_available() else "cpu"`.
 
 -----
 
 ## IX. Cách chạy
 
-1. Clone repo và cài đặt các thư viện cần thiết.
-2. Tải dataset theo link ở mục [III. Dữ liệu](#iii-dữ-liệu) và giải nén vào thư mục `data/`.
+1. Clone repo và cài đặt các thư viện cần thiết (mục VIII).
+2. **Chuẩn bị dữ liệu:**
+   - Notebook được thiết kế để chạy trên **Google Colab**. Tải bộ dữ liệu theo link ở mục [III. Dữ liệu](#iii-dữ-liệu), nén thành `data.zip`, tải lên Google Drive cá nhân, sau đó chỉnh lại đường dẫn trong cell đầu notebook cho khớp với thư mục Drive của bạn:
+     ```python
+     drive.mount('/content/drive')
+     !unzip "/content/drive/MyDrive/<đường-dẫn-của-bạn>/data.zip" -d "/content/data"
+     ```
+   - Nếu chạy local: tải và giải nén `train.csv`, `test.csv` vào thư mục `data/` ở gốc project, rồi bỏ 2 dòng `drive.mount(...)` và `!unzip ...` trong notebook — `pd.read_csv('data/train.csv')` sẽ tự đọc đúng.
 3. Mở `salesPrediction.ipynb` và chạy tuần tự các cell theo thứ tự:
-   - Khám phá dữ liệu 
-   - Tiền xử lý 
-   - Xây dựng & huấn luyện mô hình 
-   - Đánh giá mô hình 
-   - Huấn luyện trên toàn bộ dữ liệu & dự báo 
+   - Khám phá dữ liệu
+   - Tiền xử lý
+   - Xây dựng & huấn luyện mô hình
+   - Đánh giá mô hình
+   - Huấn luyện trên toàn bộ dữ liệu & dự báo
    - So sánh với LSTM, ARIMA, XGBoost
-
+     
 -----
 ## X. Kết quả
 
